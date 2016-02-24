@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Vigenere {
@@ -34,7 +33,13 @@ public class Vigenere {
 
     private void breakCipher(String filePath, String outFilePath) {
         System.out.println("Breaking cipher in file " + filePath);
-        // TODO
+        try {
+            Breaker b = new Breaker(filePath, outFilePath);
+            b.breakCipher();
+        } catch (IOException e) {
+            System.err.println("An error occurred while attempting to break the cipher.");
+            e.printStackTrace();
+        }
     }
 
     private void decrypt(String key, String inFilePath, String outFilePath) {

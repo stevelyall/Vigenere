@@ -25,10 +25,9 @@ public class Vigenere {
         }
         if (args[0].equals("-b")) {
             String filePath = args[1];
-            String outFilePath = args[3];
+            String outFilePath = args[2];
             vigenere.breakCipher(filePath, outFilePath);
         }
-
     }
 
     private void breakCipher(String filePath, String outFilePath) {

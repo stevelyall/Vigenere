@@ -26,8 +26,9 @@ public class Breaker {
 
         // determine period of key
         int period = determineKeyPeriod(ciphertext);
-        // todo determine IOC
+        System.out.println("Key is of length " + period);
 
+        // TODO find key
         return outFile.writeContents(plaintext);
     }
 
@@ -41,7 +42,7 @@ public class Breaker {
             int a = 0;
             String str = "";
             double stringIOC = 0.0;
-            for (int j = 0; j < ciphertext.length(); j += i) {
+            for (int j = 1; j < ciphertext.length(); j += i) {
                 str += ciphertext.charAt(j);
 
 
@@ -64,29 +65,31 @@ public class Breaker {
     }
 
     private double determineIOC(String str) {
-        int numLetters = 0, totalChars = 0, numerator = 0, denominator = 0;
-        int[] letters = new int[26];
+        int numLetters = 0, numerator = 0, denominator;
 
-        for (int i = 0; i < letters.length; i++) {
-            letters[i] = 0;
+        int[] letterCounts = new int[26];
+        for (int i = 0; i < letterCounts.length; i++) {
+            letterCounts[i] = 0;
         }
 
-        // calculate numerator
+        // count characters
         for (int i = 0; i < str.length(); i++) {
             if (Character.isLetter(str.charAt(i))) {
-                letters[str.charAt(i) - 'A']++;
-                totalChars++;
+                letterCounts[str.charAt(i) - 'A']++;
+                numLetters++;
             }
         }
 
+        // calculate numerator
+        for (int letter : letterCounts) {
+            numerator += letter * (letter - 1);
+        }
         // calculate denominator
-        denominator = totalChars * (numLetters - 1);
+        denominator = numLetters * (numLetters - 1);
 
-        return (double) numerator / (double) denominator;
-
-
+        double IOC = (double) numerator / (double) denominator;
+        return IOC;
     }
-
 
     private void removeOutputFile() {
         File file = new File(plaintextFilePath);

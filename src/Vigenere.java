@@ -1,75 +1,96 @@
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Vigenere {
 
     public static void main(String[] args) {
         Vigenere vigenere = new Vigenere();
-        if (!vigenere.validateArguments(args)) {
-            return;
-        }
+
 
         System.out.println("Vigenere Cypher");
+        String cmd = "";
+        while (!cmd.equals("exit")) {
+            printMenu();
+            System.out.println("Enter command:");
+            Scanner scanner = new Scanner(System.in);
+            cmd = scanner.nextLine();
+            if (!vigenere.execCmd(cmd, args)) {
+                break;
+            }
+        }
 
-        if (args[0].equals("-e")) {
-            String key = args[1];
-            String inFilePath = args[2];
-            String outFilePath = args[3];
-            vigenere.encrypt(key, inFilePath, outFilePath);
         }
-        if (args[0].equals("-d")) {
-            String key = args[1];
-            String filePath = args[2];
-            String outFilePath = args[3];
 
-            vigenere.decrypt(key, filePath, outFilePath);
-        }
-        if (args[0].equals("-b")) {
-            String filePath = args[1];
-            String outFilePath = args[2];
-            vigenere.breakCipher(filePath, outFilePath);
-        }
+    private static void printMenu() {
+        System.out.println("\nAvailable Commands:");
+        System.out.println("encrypt\t- Encrypt a string");
+        System.out.println("decrypt\t- Decrypt a string");
+        System.out.println("break\t- Attempt to break the cipher used to encrypt a string");
+        System.out.println("exit\t- Close the program");
     }
 
-    private void breakCipher(String filePath, String outFilePath) {
+    private boolean execCmd(String cmd, String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        if (cmd.equals("encrypt")) {
+            System.out.println("Enter text to encrypt:");
+            String plaintext = scanner.nextLine();
+            System.out.println("Enter key:");
+            String key = scanner.nextLine();
+            String ciphertext = encrypt(key, plaintext);
+            System.out.println("Encrypted message:");
+            System.out.println(ciphertext);
+            return true;
+
+        }
+        if (cmd.equals("decrypt")) {
+            System.out.println("Enter text to decrypt:");
+            String ciphertext = scanner.nextLine();
+            System.out.println("Enter key:");
+            String key = scanner.nextLine();
+            String plaintext = decrypt(key, ciphertext);
+            System.out.println("Decrypted message:");
+            System.out.println(plaintext);
+            return true;
+        }
+        if (cmd.equals("break")) {
+            String filePath = args[1];
+            String outFilePath = args[2];
+            breakCipher(filePath, outFilePath);
+            return true;
+        }
+        if (cmd.equals("exit")) {
+            System.out.println("Goodbye");
+            return false;
+        }
+
+        System.out.println("Please enter a valid command.");
+        return true;
+
+    }
+
+    private String breakCipher(String filePath, String outFilePath) {
         System.out.println("Breaking cipher in file " + filePath);
         try {
-            Breaker b = new Breaker(filePath, outFilePath);
+            BreakCipher b = new BreakCipher(filePath, outFilePath);
             b.breakCipher();
         } catch (IOException e) {
             System.err.println("An error occurred while attempting to break the cipher.");
             e.printStackTrace();
         }
+        return "";
     }
 
-    private void decrypt(String key, String inFilePath, String outFilePath) {
-        System.out.println("Decrypting file " + inFilePath + " with key " + key);
-        try {
-            Decryption e = new Decryption(key, inFilePath, outFilePath);
-            if (e.decrypt()) {
-                System.out.println("File decrypted successfully!");
-            } else {
-                System.out.println("Decrypting failed.");
-            }
-        } catch (IOException e) {
-            System.err.println("An error occurred while attempting to decrypt the file.");
-            e.printStackTrace();
-        }
+    private String decrypt(String key, String ciphertext) {
+        System.out.println("Decrypting text :" + ciphertext + "\nKey: " + key);
+        Encryption e = new Encryption(key);
+        return e.decrypt(ciphertext);
     }
 
-    private void encrypt(String key, String inFilePath, String outFilePath) {
-        System.out.println("Encrypting file " + inFilePath + " with key " + key);
-        try {
-            Encryption e = new Encryption(key, inFilePath, outFilePath);
-            if (e.encrypt()) {
-                System.out.println("File encrypted successfully!");
-            }
-            else {
-                System.out.println("Encrypting failed.");
-            }
-        } catch (IOException e) {
-            System.err.println("An error occurred while attempting to encrypt the file.");
-            e.printStackTrace();
-        }
+    private String encrypt(String key, String plaintext) {
+        System.out.println("Encrypting text :" + plaintext + "\nKey: " + key);
+        Encryption e = new Encryption(key);
+        return e.encrypt(plaintext);
     }
 
     private boolean validateArguments(String[] args) {

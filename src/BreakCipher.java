@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by stevenlyall on 2016-02-23.
  */
-public class Breaker {
+public class BreakCipher {
     private final int LONGEST_KEY = 5;
     private final double[] LETTER_FREQUENCIES =
             {0.08167, 0.01492, 0.02782, 0.04253, 0.12702,
@@ -21,7 +21,7 @@ public class Breaker {
     private WriteFile outFile;
     private String plaintextFilePath;
 
-    public Breaker(String filePath, String outFilePath) throws FileNotFoundException {
+    public BreakCipher(String filePath, String outFilePath) throws FileNotFoundException {
         inFile = new ReadFile(filePath);
         plaintextFilePath = outFilePath;
     }

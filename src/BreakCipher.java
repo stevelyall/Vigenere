@@ -3,9 +3,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by stevenlyall on 2016-02-23.
- */
 public class BreakCipher {
     private final int LONGEST_KEY = 5;
     private final double[] LETTER_FREQUENCIES =
@@ -30,7 +27,7 @@ public class BreakCipher {
         List<String> strings = new ArrayList<>(period);
 
         for (int i = 0; i < period; i++) {
-            double minChiSquare = 9999.9;
+            double minChiSquare = 99999.9;
             String bestCaesarShift = "";
             String str = "";
 
@@ -45,25 +42,20 @@ public class BreakCipher {
             for (int j = 0; j < 26; j++) {
                 shifts.put(j, caesarShift(str, j));
             }
-
             for (int j = 0; j < shifts.size(); j++) {
                 String shift = shifts.get(j);
-                int letterCount[] = new int[26];
-                for (int k = 0; k < shift.length(); k++) {
-                    if (Character.isLetter(shift.charAt(k))) {
-                        letterCount[shift.charAt(k) - 'A']++;
-                    }
-                }
+
+                int numLetterOccurrences[] = countLetterOccurrences(shift);
 
                 // determine chi square
                 double shiftChiSquare = 0;
-                for (int k = 0; k < shift.length(); k++) {
+                for (int k = 0; k < numLetterOccurrences.length; k++) {
                     double expectedFrequency = shift.length() * LETTER_FREQUENCIES[k];
-                    shiftChiSquare += (Math.pow((letterCount[k] - expectedFrequency), 2) / expectedFrequency);
+                    shiftChiSquare += (Math.pow((numLetterOccurrences[k] - expectedFrequency), 2) / expectedFrequency);
                 }
 
                 // check for smallest chi square value
-                if (shiftChiSquare < minChiSquare) {
+                if (minChiSquare > shiftChiSquare) {
                     minChiSquare = shiftChiSquare;
                     bestCaesarShift = shift;
                 }
@@ -83,14 +75,24 @@ public class BreakCipher {
         return stringBuilder.toString();
     }
 
-    private String caesarShift(String toShift, int j) {
+    private int[] countLetterOccurrences(String str) {
+        int result[] = new int[26];
+        for (int k = 0; k < str.length(); k++) {
+            if (Character.isLetter(str.charAt(k))) {
+                result[str.charAt(k) - 'A']++;
+            }
+        }
+        return result;
+    }
+
+    private String caesarShift(String toShift, int numToShift) {
         String shifted = "";
-        for (int k = 0; k < toShift.length(); k++) {
-            char c = (char) (toShift.charAt(k) + j);
-            if (c <= 'Z') {
-                shifted += c;
+        for (int i = 0; i < toShift.length(); i++) {
+            char letter = (char) (toShift.charAt(i) + numToShift);
+            if (letter > 'Z') {
+                shifted += (char) (letter - 26);
             } else {
-                shifted += (char) (c - 26);
+                shifted += letter;
             }
         }
         return shifted;
@@ -103,10 +105,11 @@ public class BreakCipher {
         for (int i = 1; i <= LONGEST_KEY; i++) {
 
             // get sequences for key length
-            int a = 0;
+
             String str = "";
             double stringIOC = 0.0;
-            for (int j = 1; j < ciphertext.length(); j += i) {
+            int a = 1;
+            for (int j = 0; j < ciphertext.length(); j += i) {
                 str += ciphertext.charAt(j);
 
 

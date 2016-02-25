@@ -6,15 +6,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by stevenlyall on 2016-02-22.
  */
 public class WriteFileTest {
-    WriteFile wf;
     final String PATH_READ = "testFile";
-    final String PATH_WRITE = "testFile-written";
+    final String PATH_WRITE = "testFile-WriteTest";
+    WriteFile wf;
     String toWrite;
 
     @Before

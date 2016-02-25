@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Vigenere {
@@ -54,9 +53,11 @@ public class Vigenere {
             return true;
         }
         if (cmd.equals("break")) {
-            String filePath = args[1];
-            String outFilePath = args[2];
-            breakCipher(filePath, outFilePath);
+            System.out.println("Enter ciphertext to analyze:");
+            String ciphertext = scanner.nextLine();
+            String plaintext = breakCipher(ciphertext);
+            System.out.println("The message is:");
+            System.out.println(plaintext);
             return true;
         }
         if (cmd.equals("exit")) {
@@ -69,64 +70,22 @@ public class Vigenere {
 
     }
 
-    private String breakCipher(String filePath, String outFilePath) {
-        System.out.println("Breaking cipher in file " + filePath);
-        try {
-            BreakCipher b = new BreakCipher(filePath, outFilePath);
-            b.breakCipher();
-        } catch (IOException e) {
-            System.err.println("An error occurred while attempting to break the cipher.");
-            e.printStackTrace();
-        }
-        return "";
+    private String breakCipher(String ciphertext) {
+        System.out.println("Breaking cipher in message: " + ciphertext);
+        BreakCipher b = new BreakCipher();
+        return b.breakCipher(ciphertext);
     }
 
     private String decrypt(String key, String ciphertext) {
-        System.out.println("Decrypting text :" + ciphertext + "\nKey: " + key);
+        System.out.println("Decrypting text: " + ciphertext + "\nKey: " + key);
         Encryption e = new Encryption(key);
         return e.decrypt(ciphertext);
     }
 
     private String encrypt(String key, String plaintext) {
-        System.out.println("Encrypting text :" + plaintext + "\nKey: " + key);
+        System.out.println("Encrypting text: " + plaintext + "\nKey: " + key);
         Encryption e = new Encryption(key);
         return e.encrypt(plaintext);
     }
 
-    private boolean validateArguments(String[] args) {
-
-        if (args.length < 2 || args.length > 4) {
-            printHelpText();
-            return false;
-        }
-
-        boolean validFlag = (args[0].equals("-e") || args[0].equals("-d" ) || args[0].equals("-b"));
-
-        if (!validFlag)  {
-            printHelpText();
-            return false;
-        }
-
-        if ((args[0].equals("-e") || args[0].equals("-d")) && args.length != 4) {
-            System.err.println("Error: Must supply key and file paths for decryption or encryption");
-            System.err.println("Usage: Vigenere <mode> [<key>] <input file> <output file>");
-            return false;
-        }
-
-        if (args[0].equals("-b") && args.length != 3) {
-            System.err.println("Error: Must supply file names to break cipher");
-            System.err.println("Usage: Vigenere <mode> <input file> <output file>");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void printHelpText() {
-        System.err.println("Error: Must specify correct mode. -e for encrypt, -d to decrypt, -b to break");
-        System.err.println("Usage: Vigenere <mode> [<key>] <input file> <output file>");
-        System.err.println("\t-e\t<key> <input file> <output file>\t encrypt a file using the supplied key");
-        System.err.println("\t-d\t<key> <input file> <output file>\t decrypt a file using the supplied key");
-        System.err.println("\t-b\t<file>                          \t attempt to break the cipher");
-    }
 }

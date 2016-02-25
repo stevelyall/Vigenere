@@ -1,6 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,34 +14,19 @@ public class BreakCipher {
                     0.04025, 0.02406, 0.06749, 0.07507, 0.01929, 0.00095,
                     0.05987, 0.06327, 0.09056, 0.02758, 0.00978, 0.02360,
                     0.00150, 0.01974, 0.00074};
-    private ReadFile inFile;
-    private WriteFile outFile;
-    private String plaintextFilePath;
 
-    public BreakCipher(String filePath, String outFilePath) throws FileNotFoundException {
-        inFile = new ReadFile(filePath);
-        plaintextFilePath = outFilePath;
-    }
-
-    public boolean breakCipher() throws IOException {
-        removeOutputFile();
-        outFile = new WriteFile(plaintextFilePath);
-
-        String ciphertext = inFile.getFileContents();
+    public String breakCipher(String ciphertext) {
         ciphertext = ciphertext.toUpperCase();
 
         // determine period of key
         int period = determineKeyPeriod(ciphertext);
         System.out.println("Key is of length " + period);
 
-        String plaintext = breakCipher(period, ciphertext);
-        System.out.println("Plaintext:");
-        System.out.println(plaintext);
-        System.out.println("Done");
-        return outFile.writeContents(plaintext);
+        String plaintext = findPlaintext(period, ciphertext);
+        return plaintext;
     }
 
-    private String breakCipher(int period, String ciphertext) {
+    private String findPlaintext(int period, String ciphertext) {
         List<String> strings = new ArrayList<>(period);
 
         for (int i = 0; i < period; i++) {
@@ -170,12 +152,5 @@ public class BreakCipher {
         denominator = numLetters * (numLetters - 1);
 
         return (double) numerator / (double) denominator;
-    }
-
-    private void removeOutputFile() {
-        File file = new File(plaintextFilePath);
-        if (file.exists()) {
-            file.delete();
-        }
     }
 }

@@ -1,3 +1,14 @@
+/**
+ * Steven Lyall
+ * COMP 3260 Assignment 3
+ * <p>
+ * Portions of application adapted from:
+ * http://rosettacode.org/wiki/Vigen%C3%A8re_cipher#Java
+ * http://rosettacode.org/wiki/Vigen%C3%A8re_cipher#Java
+ * http://rosettacode.org/wiki/Vigen%C3%A8re_cipher/Cryptanalysis#Chttp://www.codewiz51.com/blog/post/2012/09/15/Program-to-calculate-the-Index-of-Coincidence.aspx
+ * http://practicalcryptography.com/cryptanalysis/text-characterisation/index-coincidence/
+ **/
+
 import java.util.Scanner;
 
 public class Vigenere {
@@ -13,12 +24,11 @@ public class Vigenere {
             System.out.println("Enter command:");
             Scanner scanner = new Scanner(System.in);
             cmd = scanner.nextLine();
-            if (!vigenere.execCmd(cmd, args)) {
+            if (!vigenere.execCmd(cmd)) {
                 break;
             }
         }
-
-        }
+    }
 
     private static void printMenu() {
         System.out.println("\nAvailable Commands:");
@@ -28,7 +38,7 @@ public class Vigenere {
         System.out.println("exit\t- Close the program");
     }
 
-    private boolean execCmd(String cmd, String[] args) {
+    private boolean execCmd(String cmd) {
         Scanner scanner = new Scanner(System.in);
 
         if (cmd.equals("encrypt")) {

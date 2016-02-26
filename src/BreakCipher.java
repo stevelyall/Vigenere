@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BreakCipher {
-    private final int LONGEST_KEY = 5;
+
     private final double[] LETTER_FREQUENCIES =
             {0.08167, 0.01492, 0.02782, 0.04253, 0.12702,
                     0.02228, 0.02015, 0.06094, 0.06966, 0.00153, 0.00772,
@@ -19,8 +19,7 @@ public class BreakCipher {
         int period = determineKeyPeriod(ciphertext);
         System.out.println("Key is of length " + period);
 
-        String plaintext = findPlaintext(period, ciphertext);
-        return plaintext;
+        return findPlaintext(period, ciphertext);
     }
 
     private String findPlaintext(int period, String ciphertext) {
@@ -102,6 +101,7 @@ public class BreakCipher {
         int period = 0;
         double indexOfCoincidence = 0.0;
 
+        int LONGEST_KEY = 5;
         for (int i = 1; i <= LONGEST_KEY; i++) {
 
             // get sequences for key length
